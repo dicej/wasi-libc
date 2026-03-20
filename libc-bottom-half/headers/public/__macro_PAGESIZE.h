@@ -14,7 +14,11 @@
  * consideration. POSIX has deprecated `getpagesize` in favor of
  * `sysconf(_SC_PAGESIZE)` which does not have this problem.
  */
-#if __clang_major__ >= 22
+// TODO: As of this writing, `((unsigned long)&__wasm_first_page_end)` yields an
+// apparently garbage value in shared libraries, leading to alignment-related
+// panics in `sbrk`; not sure what the correct fix is.  For now, we assume the
+// traditional page size.
+#if 0//__clang_major__ >= 22
 extern char __wasm_first_page_end;
 #define PAGESIZE ((unsigned long)&__wasm_first_page_end)
 #else
